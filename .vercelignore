@@ -1,0 +1,8 @@
+docs/
+prolog/
+tools/
+tests/
+examples/
+app.py
+frontend/node_modules/
+**/__pycache__/

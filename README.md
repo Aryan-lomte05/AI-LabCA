@@ -35,6 +35,20 @@ cd frontend && npm install && npm run dev    # http://localhost:5173 (proxies /a
 npm run build                                # rebuild frontend/dist
 ```
 
+## Deploy on Vercel
+
+The repo is ready for Vercel with zero configuration on the dashboard. `vercel.json` builds the React UI from `frontend/`. The files `api/consult.py`, `api/kb.py` and `api/scenarios.py` run the same Python engine as serverless functions; they use only the standard library, so there is nothing to install.
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/aryan-lomte05/ai-labca)
+
+Or go to vercel.com → **Add New… → Project**, import `aryan-lomte05/ai-labca`, and click **Deploy**. You can also use the CLI:
+
+```bash
+npm i -g vercel
+vercel          # preview deployment
+vercel --prod   # production deployment
+```
+
 ## Run
 
 Python 3.9+ is required. The core system has **no dependencies**.
@@ -44,7 +58,7 @@ python -m heatwave_es                 # interactive consultation (type 'why' at 
 python -m heatwave_es --json examples/warm_night_escalation.json
 python -m heatwave_es --rules         # print the knowledge base
 
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 python -m pytest -q                   # 25 tests
 streamlit run app.py                  # lighter Streamlit interface
 python tools/build_report.py          # regenerate report (needs pandoc; PDF needs LibreOffice)

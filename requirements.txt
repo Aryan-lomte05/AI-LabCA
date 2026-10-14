@@ -1,4 +1,2 @@
-# Core expert system uses only the Python standard library (Python 3.9+).
-pytest>=7          # test suite
-streamlit>=1.30    # optional web interface (app.py)
-python-docx>=1.0   # only for tools/build_report.py
+# Runtime: the expert system and API use only the Python standard library.
+# Development / optional extras: pip install -r requirements-dev.txt
