@@ -123,3 +123,61 @@ SCENARIOS.append({
                "escalated": "extreme humid heat"},
     "must_fire": ["C2", "C7", "H4", "A3", "E3", "X2"],
 })
+
+# --- added for 100 % rule coverage (every rule fires in at least one scenario) ---
+SCENARIOS += [
+    {
+        "id": "TC16", "title": "Classic heat stroke (hot, dry skin) reported to health dept",
+        "inputs": {"role": "health", "region": "plains", "tmax": 44.0, "tmax_normal": 39.0,
+                   "heat_days": 2, "rh": 20, "symptoms": ["high_body_temp", "no_sweating"]},
+        "expect": {"alert": "YELLOW", "hri": "heat_stroke", "emergency": True},
+        "must_fire": ["T2", "T5", "C7", "A3", "M1"], "must_not_fire": ["T1", "T3"],
+    },
+    {
+        "id": "TC17", "title": "Heat exhaustion on a normal day (exertional)",
+        "inputs": {"role": "citizen", "region": "plains", "tmax": 34.0, "tmax_normal": 33.0,
+                   "heat_days": 1, "rh": 30, "vulnerable": [],
+                   "symptoms": ["heavy_sweating", "dizziness"]},
+        "expect": {"alert": "GREEN", "hri": "heat_exhaustion"},
+        "must_fire": ["T3", "T6", "A1", "P1"], "must_not_fire": ["T5"],
+    },
+    {
+        "id": "TC18", "title": "Farmer on a normal day - routine advice only",
+        "inputs": {"role": "farmer", "region": "plains", "tmax": 36.0, "tmax_normal": 35.0,
+                   "heat_days": 1, "rh": 35, "farm": "crops"},
+        "expect": {"alert": "GREEN", "hw_category": "none"},
+        "must_fire": ["F1"], "must_not_fire": ["F2", "F3"],
+    },
+    {
+        "id": "TC19", "title": "Health department on a normal day",
+        "inputs": {"role": "health", "region": "coastal", "tmax": 33.0, "tmax_normal": 32.0,
+                   "heat_days": 1, "rh": 40, "symptoms": []},
+        "expect": {"alert": "GREEN"},
+        "must_fire": ["M3"], "must_not_fire": ["M1", "M2"],
+    },
+    {
+        "id": "TC20", "title": "Invalid humidity (140 %) - graceful halt",
+        "inputs": {"role": "citizen", "region": "coastal", "tmax": 36.0, "rh": 140},
+        "expect": {"error": "Relative humidity must be 0..100 %"},
+        "must_fire": ["V3"], "halted_by": "V3",
+    },
+    {
+        "id": "TC21", "title": "Implausible normal temperature (70 C) - graceful halt",
+        "inputs": {"role": "citizen", "region": "plains", "tmax": 44.0, "tmax_normal": 70.0},
+        "expect": {"error": "Normal Tmax outside plausible range 5..50 C"},
+        "must_fire": ["V2"], "must_not_fire": ["D1"], "halted_by": "V2",
+    },
+    {
+        "id": "TC22", "title": "Invalid persistence (0 days) - graceful halt",
+        "inputs": {"role": "authority", "region": "plains", "tmax": 44.0, "heat_days": 0},
+        "expect": {"error": "Consecutive hot days must be between 1 and 60"},
+        "must_fire": ["V4"], "halted_by": "V4",
+    },
+    {
+        "id": "TC23", "title": "Heat wave persisting 5 days - Orange for authority",
+        "inputs": {"role": "authority", "region": "plains", "tmax": 45.5, "tmax_normal": 41.5,
+                   "heat_days": 5, "rh": 15},
+        "expect": {"alert": "ORANGE", "hw_category": "heatwave"},
+        "must_fire": ["C6", "A4", "X2"], "must_not_fire": ["A5", "G1"],
+    },
+]

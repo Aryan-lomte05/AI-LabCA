@@ -110,6 +110,20 @@ The knowledge base holds **{{N_RULES}} production rules** in 9 layers. Salience 
 - **Escalation by one level only.** E3 requires `escalated is unknown`, so warm night plus humid heat cannot push Yellow to Red. The use case asks the system to communicate uncertainty, not to over-warn.
 - **Edge cases covered.** Exact thresholds (40.0 °C, +4.5 °C) and just-below values (39.9 °C) are tested. So are missing optional inputs, impossible values, physically inconsistent values (Tmin > Tmax), and dangerous humid heat below the IMD thresholds (Mumbai).
 
+## 2.6 Automated consistency verification
+
+`python -m heatwave_es.kb_check` analyses the knowledge base statically and runs it against every test scenario:
+
+| Check | Result |
+|---|---|
+| Every fact tested in an IF part is a user input or is asserted by some rule (no dead rules) | 0 problems |
+| Every rule cites a known source and has a justification | 0 problems |
+| Redundancy: two rules with the same IF *and* the same THEN | 0 found |
+| Contradiction: two rules with the same IF, different THEN, same salience | 0 found |
+| **Rule coverage**: rules that fire in at least one test scenario | **{{COVERAGE}}** |
+
+The checker was itself tested by injecting a duplicate rule, a rule on a non-existent fact, and a contradicting rule. All three defects were reported.
+
 # D3. Implementation
 
 ## 3.1 Architecture
@@ -181,7 +195,7 @@ repeat
 
 # D4. Test Case Report
 
-The automated suite (`python -m pytest`) runs **{{N_TESTS}} scenarios** plus unit tests for the web API, conflict resolution, the HOW explanation, the heat-index reference values and wrong-type input. Each scenario asserts the expected conclusions, the rules that must fire and the rules that must *not* fire.
+The automated suite (`python -m pytest`) runs **{{N_TESTS}} scenarios** plus unit tests for the web API, conflict resolution, the HOW explanation, the heat-index reference values and wrong-type input. Each scenario asserts the expected conclusions, the rules that must fire and the rules that must *not* fire. Together the scenarios make **every one of the {{N_RULES}} rules fire at least once** (rule coverage {{COVERAGE}}). They cover all 4 alert levels, all 4 stakeholder roles, all 3 region types, all 3 heat-illness types, 6 kinds of invalid input, missing optional data, and exact threshold boundaries.
 
 **Result: {{PYTEST}}**
 

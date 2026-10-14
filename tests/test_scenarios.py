@@ -69,3 +69,14 @@ def test_wrong_type_input_does_not_crash():
     res = ENGINE.run({"role": "citizen", "region": "plains", "tmax": 45.0,
                       "tmax_normal": "forty"})
     assert "recommendation" in res.facts or "error" in res.facts
+
+
+def test_knowledge_base_is_consistent():
+    from heatwave_es.kb_check import check
+    assert check() == []
+
+
+def test_every_rule_is_covered_by_some_scenario():
+    from heatwave_es.kb_check import coverage
+    _, missing = coverage()
+    assert missing == []

@@ -111,6 +111,12 @@ def test_details(results) -> str:
     return "\n".join(parts)
 
 
+def coverage_text() -> str:
+    from heatwave_es.kb_check import coverage
+    fired, _ = coverage()
+    return f"{len(fired)}/{len(RULES)} (100 %)" if len(fired) == len(RULES) else f"{len(fired)}/{len(RULES)}"
+
+
 def pytest_summary() -> str:
     p = subprocess.run([sys.executable, "-m", "pytest", "-q", str(ROOT / "tests")],
                        capture_output=True, text=True, cwd=ROOT)
@@ -191,6 +197,7 @@ def main() -> None:
         "{{RULE_TABLE}}": rule_table(),
         "{{SAMPLE_RUN}}": full_report(eng, tc09, verbose=False),
         "{{N_TESTS}}": str(len(SCENARIOS)),
+        "{{COVERAGE}}": coverage_text(),
         "{{PYTEST}}": pytest_summary(),
         "{{TEST_TABLE}}": test_table(results),
         "{{TEST_DETAILS}}": test_details(results),

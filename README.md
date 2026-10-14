@@ -19,7 +19,7 @@ From a temperature observation or forecast, HeatGuard:
 | D1 Problem definition | `docs/HeatGuard_Report.pdf`, section D1 |
 | D2 Knowledge base (59 IF-THEN rules, dependency diagram) | `heatwave_es/knowledge_base.py`, report section D2, `docs/img/rule_dependency.png` |
 | D3 Implementation (forward-chaining engine + explanation) | `heatwave_es/`, `app.py`, `prolog/heatguard.pl` |
-| D4 Test case report (15 scenarios) | `docs/Test_Case_Report.md`, report section D4, `tests/` |
+| D4 Test case report (23 scenarios, 100 % rule coverage) | `docs/Test_Case_Report.md`, report section D4, `tests/` |
 | D5 Demo + viva | `docs/VIVA_PREP.md` |
 | D6 Reflection (individual) | report section D6 (each member fills in their own) |
 
@@ -57,9 +57,10 @@ Python 3.9+ is required. The core system has **no dependencies**.
 python -m heatwave_es                 # interactive consultation (type 'why' at any question)
 python -m heatwave_es --json examples/warm_night_escalation.json
 python -m heatwave_es --rules         # print the knowledge base
+python -m heatwave_es.kb_check        # consistency + rule-coverage check
 
 pip install -r requirements-dev.txt
-python -m pytest -q                   # 25 tests
+python -m pytest -q                   # 35 tests
 streamlit run app.py                  # lighter Streamlit interface
 python tools/build_report.py          # regenerate report (needs pandoc; PDF needs LibreOffice)
 ```

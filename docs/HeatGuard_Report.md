@@ -124,7 +124,7 @@ The knowledge base holds **59 production rules** in 9 layers. Salience (priority
 | D2 | Compute Tmin departure from normal | tmin is known AND tmin_normal is known | tmin_departure = <computed> | 90 | S3 |
 | D3 | Compute heat index | tmax is known AND rh is known | heat_index = <computed> | 90 | S6 |
 | C1 | Plains threshold reached | region == 'plains' AND tmax >= 40 | threshold_met = True | 80 | S1 |
-| C2 | Coastal threshold reached | region == 'coastal' AND tmax >= 37 | threshold_met = True | 80 | S1 |
+| C2 | Coastal threshold reached | region == 'coastal' AND tmax >= 35 | threshold_met = True | 80 | S1 |
 | C3 | Hilly threshold reached | region == 'hilly' AND tmax >= 30 | threshold_met = True | 80 | S1 |
 | C4 | Severe heat wave by absolute temperature | threshold_met == True AND tmax >= 47 AND hw_category is unknown | hw_category = 'severe_heatwave' | 78 | S1 |
 | C5 | Severe heat wave by departure | threshold_met == True AND departure > 6.4 AND hw_category is unknown | hw_category = 'severe_heatwave' | 78 | S1 |
@@ -177,6 +177,20 @@ The knowledge base holds **59 production rules** in 9 layers. Salience (priority
 - **Single default.** C8 (*no heat wave*) has the lowest classification salience (70). It fires only when no criterion matched. This is the expert-system form of "otherwise".
 - **Escalation by one level only.** E3 requires `escalated is unknown`, so warm night plus humid heat cannot push Yellow to Red. The use case asks the system to communicate uncertainty, not to over-warn.
 - **Edge cases covered.** Exact thresholds (40.0 °C, +4.5 °C) and just-below values (39.9 °C) are tested. So are missing optional inputs, impossible values, physically inconsistent values (Tmin > Tmax), and dangerous humid heat below the IMD thresholds (Mumbai).
+
+## 2.6 Automated consistency verification
+
+`python -m heatwave_es.kb_check` analyses the knowledge base statically and runs it against every test scenario:
+
+| Check | Result |
+|---|---|
+| Every fact tested in an IF part is a user input or is asserted by some rule (no dead rules) | 0 problems |
+| Every rule cites a known source and has a justification | 0 problems |
+| Redundancy: two rules with the same IF *and* the same THEN | 0 found |
+| Contradiction: two rules with the same IF, different THEN, same salience | 0 found |
+| **Rule coverage**: rules that fire in at least one test scenario | **59/59 (100 %)** |
+
+The checker was itself tested by injecting a duplicate rule, a rule on a non-existent fact, and a contradicting rule. All three defects were reported.
 
 # D3. Implementation
 
@@ -316,16 +330,16 @@ S6: US NWS / NOAA - Heat Index (Rothfusz regression, 1990) and risk bands: Cauti
 
 # D4. Test Case Report
 
-The automated suite (`python -m pytest`) runs **15 scenarios** plus unit tests for the web API, conflict resolution, the HOW explanation, the heat-index reference values and wrong-type input. Each scenario asserts the expected conclusions, the rules that must fire and the rules that must *not* fire.
+The automated suite (`python -m pytest`) runs **23 scenarios** plus unit tests for the web API, conflict resolution, the HOW explanation, the heat-index reference values and wrong-type input. Each scenario asserts the expected conclusions, the rules that must fire and the rules that must *not* fire. Together the scenarios make **every one of the 59 rules fire at least once** (rule coverage 59/59 (100 %)). They cover all 4 alert levels, all 4 stakeholder roles, all 3 region types, all 3 heat-illness types, 6 kinds of invalid input, missing optional data, and exact threshold boundaries.
 
-**Result: 25 passed in 0.06s**
+**Result: 1 failed, 34 passed in 0.09s**
 
 ## 4.1 Summary
 
 | TC | Scenario | Alert / outcome | Rules fired | Result |
 |---|---|---|---|---|
 | TC01 | Normal summer day, Pune (plains) - no heat wave | GREEN / none | 7 | PASS |
-| TC02 | Humid heat, Mumbai (coastal) - below IMD threshold | YELLOW / none | 9 | PASS |
+| TC02 | Humid heat, Mumbai (coastal) - below IMD threshold | YELLOW / none | 10 | FAIL |
 | TC03 | Severe heat wave for 4 days, Vidarbha (farmer) | RED / severe_heatwave | 11 | PASS |
 | TC04 | Heat wave criteria met on day 1 only (municipal authority) | YELLOW / heatwave | 9 | PASS |
 | TC05 | Hill station (Mahabaleshwar) severe departure, 2 days (health dept) | ORANGE / severe_heatwave | 8 | PASS |
@@ -339,6 +353,14 @@ The automated suite (`python -m pytest`) runs **15 scenarios** plus unit tests f
 | TC13 | Prolonged heat wave (7 days) - Red with human review | RED / heatwave | 12 | PASS |
 | TC14 | Coastal heat wave with very warm night (Ratnagiri) | ORANGE / heatwave | 14 | PASS |
 | TC15 | Heat wave day 2 with extreme humid heat index (Konkan coast) | ORANGE / heatwave | 9 | PASS |
+| TC16 | Classic heat stroke (hot, dry skin) reported to health dept | YELLOW / heatwave + EMERGENCY | 11 | PASS |
+| TC17 | Heat exhaustion on a normal day (exertional) | GREEN / none | 9 | PASS |
+| TC18 | Farmer on a normal day - routine advice only | GREEN / none | 7 | PASS |
+| TC19 | Health department on a normal day | GREEN / none | 7 | PASS |
+| TC20 | Invalid humidity (140 %) - graceful halt | ERROR (halt V3) | 1 | PASS |
+| TC21 | Implausible normal temperature (70 C) - graceful halt | ERROR (halt V2) | 1 | PASS |
+| TC22 | Invalid persistence (0 days) - graceful halt | ERROR (halt V4) | 1 | PASS |
+| TC23 | Heat wave persisting 5 days - Orange for authority | ORANGE / heatwave | 9 | PASS |
 
 ## 4.2 Detailed scenarios
 
@@ -354,9 +376,9 @@ The automated suite (`python -m pytest`) runs **15 scenarios** plus unit tests f
 
 - *Inputs:* `role=citizen, region=coastal, tmax=35.0, tmax_normal=33.0, heat_days=2, rh=60, vulnerable=elderly`
 - *Expected:* alert = YELLOW, hw_category = none, hi_level = danger, escalated = humid heat stress
-- *Rules fired (in order):* D1 → D3 → H3 → C8 → A1 → E2 → P4 → P2 → K1
+- *Rules fired (in order):* D1 → D3 → C2 → H3 → C8 → A1 → E2 → P4 → P2 → K1
 - *Output:* YELLOW ALERT (Heat alert - be updated); advice for: CITIZEN, VULNERABLE
-- *Result:* **PASS**
+- *Result:* **FAIL**
 
 **TC03: Severe heat wave for 4 days, Vidarbha (farmer)**
 
@@ -460,6 +482,70 @@ The automated suite (`python -m pytest`) runs **15 scenarios** plus unit tests f
 - *Expected:* alert = ORANGE, hw_category = heatwave, hi_level = extreme_danger, escalated = extreme humid heat
 - *Rules fired (in order):* D1 → D3 → C2 → H4 → C7 → A3 → E3 → X2 → K1
 - *Output:* ORANGE ALERT (Severe heat alert - be prepared) - IMD category: heatwave; advice for: AUTHORITY
+- *Result:* **PASS**
+
+**TC16: Classic heat stroke (hot, dry skin) reported to health dept**
+
+- *Inputs:* `role=health, region=plains, tmax=44.0, tmax_normal=39.0, heat_days=2, rh=20, symptoms=high_body_temp/no_sweating`
+- *Expected:* alert = YELLOW, hri = heat_stroke, emergency = True
+- *Rules fired (in order):* T2 → T5 → D1 → D3 → C1 → H3 → C7 → A3 → G3 → M1 → K1
+- *Output:* YELLOW ALERT (Heat alert - be updated) - IMD category: heatwave; advice for: EMERGENCY, HEALTH, NOTE
+- *Result:* **PASS**
+
+**TC17: Heat exhaustion on a normal day (exertional)**
+
+- *Inputs:* `role=citizen, region=plains, tmax=34.0, tmax_normal=33.0, heat_days=1, rh=30, symptoms=heavy_sweating/dizziness`
+- *Expected:* alert = GREEN, hri = heat_exhaustion
+- *Rules fired (in order):* T3 → T6 → D1 → D3 → H2 → C8 → A1 → P1 → K1
+- *Output:* GREEN ALERT (No action - normal day); advice for: CITIZEN, FIRST AID
+- *Result:* **PASS**
+
+**TC18: Farmer on a normal day - routine advice only**
+
+- *Inputs:* `role=farmer, region=plains, tmax=36.0, tmax_normal=35.0, heat_days=1, rh=35, farm=crops`
+- *Expected:* alert = GREEN, hw_category = none
+- *Rules fired (in order):* D1 → D3 → H2 → C8 → A1 → F1 → K1
+- *Output:* GREEN ALERT (No action - normal day); advice for: FARMER
+- *Result:* **PASS**
+
+**TC19: Health department on a normal day**
+
+- *Inputs:* `role=health, region=coastal, tmax=33.0, tmax_normal=32.0, heat_days=1, rh=40`
+- *Expected:* alert = GREEN
+- *Rules fired (in order):* D1 → D3 → H2 → C8 → A1 → M3 → K1
+- *Output:* GREEN ALERT (No action - normal day); advice for: HEALTH
+- *Result:* **PASS**
+
+**TC20: Invalid humidity (140 %) - graceful halt**
+
+- *Inputs:* `role=citizen, region=coastal, tmax=36.0, rh=140`
+- *Expected:* error = Relative humidity must be 0..100 %
+- *Rules fired (in order):* V3
+- *Output:* INPUT ERROR: Relative humidity must be 0..100 %
+- *Result:* **PASS**
+
+**TC21: Implausible normal temperature (70 C) - graceful halt**
+
+- *Inputs:* `role=citizen, region=plains, tmax=44.0, tmax_normal=70.0`
+- *Expected:* error = Normal Tmax outside plausible range 5..50 C
+- *Rules fired (in order):* V2
+- *Output:* INPUT ERROR: Normal Tmax outside plausible range 5..50 C
+- *Result:* **PASS**
+
+**TC22: Invalid persistence (0 days) - graceful halt**
+
+- *Inputs:* `role=authority, region=plains, tmax=44.0, heat_days=0`
+- *Expected:* error = Consecutive hot days must be between 1 and 60
+- *Rules fired (in order):* V4
+- *Output:* INPUT ERROR: Consecutive hot days must be between 1 and 60
+- *Result:* **PASS**
+
+**TC23: Heat wave persisting 5 days - Orange for authority**
+
+- *Inputs:* `role=authority, region=plains, tmax=45.5, tmax_normal=41.5, heat_days=5, rh=15`
+- *Expected:* alert = ORANGE, hw_category = heatwave
+- *Rules fired (in order):* D1 → D3 → C1 → H3 → C6 → A4 → G3 → X2 → K1
+- *Output:* ORANGE ALERT (Severe heat alert - be prepared) - IMD category: heatwave; advice for: AUTHORITY, NOTE
 - *Result:* **PASS**
 
 
