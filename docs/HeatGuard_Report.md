@@ -190,6 +190,8 @@ heatwave_es/
   explain.py         recommendation / advisory / trace / HOW formatting
   cli.py             interactive question-answer interface (WHY, skip, HOW)
   scenarios.py       test scenarios (D4)
+server.py            JSON API + host for the React UI (stdlib only)
+frontend/            HeatGuard Atlas React UI (Vite, Tailwind, React Bits)
 app.py               Streamlit web interface (optional)
 prolog/heatguard.pl  SWI-Prolog edition: backward chaining meta-interpreter
 tests/               pytest suite
@@ -235,7 +237,8 @@ repeat
 
 - **CLI** (`python -m heatwave_es`): asks only relevant questions (role-dependent, and Tmin only when Tmax ≥ 40 °C). It accepts prefixes (`p` → plains), validates ranges, lets optional questions be skipped, re-asks politely on bad input, and supports `why`, `how <fact>`, `new` and `quit`.
 - **Batch mode** (`python -m heatwave_es --json case.json`) and **rule listing** (`--rules`).
-- **Web UI** (`streamlit run app.py`): sidebar form, colour-coded alert banner, advisory, trace, HOW selector, and browsable knowledge base.
+- **HeatGuard Atlas web UI** (`python server.py`, then open http://localhost:8000): a React + Tailwind single-page app built with React Bits components. It has an Aurora hero, a four-step Stepper consultation, the live verdict with a decrypting alert level, SpotlightCards, AnimatedList advisories and rule-firing trace, an interactive HOW proof tree, and a searchable knowledge base that highlights the rules that fired. The Python standard-library server (`server.py`) exposes the engine as a JSON API (`/api/consult`, `/api/kb`, `/api/scenarios`), so the UI and the CLI share exactly the same inference engine.
+- **Streamlit UI** (`streamlit run app.py`): a lighter alternative interface.
 - **Prolog** (`swipl prolog/heatguard.pl`, then `?- start.`): goal-driven consultation with `why` and a proof tree.
 
 ## 3.6 Sample run (TC09, warm-night escalation)
@@ -313,9 +316,9 @@ S6: US NWS / NOAA - Heat Index (Rothfusz regression, 1990) and risk bands: Cauti
 
 # D4. Test Case Report
 
-The automated suite (`python -m pytest`) runs **15 scenarios** plus unit tests for conflict resolution, the HOW explanation, the heat-index reference values and wrong-type input. Each scenario asserts the expected conclusions, the rules that must fire and the rules that must *not* fire.
+The automated suite (`python -m pytest`) runs **15 scenarios** plus unit tests for the web API, conflict resolution, the HOW explanation, the heat-index reference values and wrong-type input. Each scenario asserts the expected conclusions, the rules that must fire and the rules that must *not* fire.
 
-**Result: 22 passed in 0.04s**
+**Result: 25 passed in 0.06s**
 
 ## 4.1 Summary
 

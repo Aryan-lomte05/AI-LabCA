@@ -23,6 +23,18 @@ From a temperature observation or forecast, HeatGuard:
 | D5 Demo + viva | `docs/VIVA_PREP.md` |
 | D6 Reflection (individual) | report section D6 (each member fills in their own) |
 
+## HeatGuard Atlas: the web UI
+
+A React + Tailwind interface built with [React Bits](https://reactbits.dev) components: an Aurora hero, SplitText/GradientText headings, a Stepper consultation wizard, a DecryptedText alert, SpotlightCards, AnimatedList advisories and trace, Magnet preset chips, StarBorder buttons and ClickSpark. Every answer you change is sent straight to the Python inference engine.
+
+```bash
+python server.py            # open http://localhost:8000  (the built UI is committed, no Node needed)
+
+# to edit the UI:
+cd frontend && npm install && npm run dev    # http://localhost:5173 (proxies /api to :8000)
+npm run build                                # rebuild frontend/dist
+```
+
 ## Run
 
 Python 3.9+ is required. The core system has **no dependencies**.
@@ -33,8 +45,8 @@ python -m heatwave_es --json examples/warm_night_escalation.json
 python -m heatwave_es --rules         # print the knowledge base
 
 pip install -r requirements.txt
-python -m pytest -q                   # 22 tests
-streamlit run app.py                  # web interface
+python -m pytest -q                   # 25 tests
+streamlit run app.py                  # lighter Streamlit interface
 python tools/build_report.py          # regenerate report (needs pandoc; PDF needs LibreOffice)
 ```
 

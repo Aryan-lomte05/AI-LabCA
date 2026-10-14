@@ -1,6 +1,6 @@
 # D4 - Test Case Report (auto-generated)
 
-pytest: **22 passed in 0.04s**
+pytest: **25 passed in 0.06s**
 
 | TC | Scenario | Alert / outcome | Rules fired | Result |
 |---|---|---|---|---|
