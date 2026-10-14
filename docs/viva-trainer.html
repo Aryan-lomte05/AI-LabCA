@@ -1,0 +1,418 @@
+<title>HeatGuard Viva Trainer</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a weather-office study desk - sticky tab bar, one working panel per tab, max 960px column */
+:root {
+  --bg: #f3f5f7; --surface: #ffffff; --ink: #14202b; --muted: #5b6875; --line: #dbe1e7;
+  --accent: #c2410c; --accent-soft: #fde7da;
+  --green: #15803d; --yellow: #a16207; --orange: #c2410c; --red: #b91c1c;
+  --green-bg: #dcfce7; --yellow-bg: #fef3c7; --orange-bg: #ffedd5; --red-bg: #fee2e2;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f151b; --surface: #17202a; --ink: #e6ecf1; --muted: #93a1ae; --line: #2a3643;
+  --accent: #fb923c; --accent-soft: #3a2416;
+  --green: #4ade80; --yellow: #facc15; --orange: #fb923c; --red: #f87171;
+  --green-bg: #13301f; --yellow-bg: #332a0c; --orange-bg: #3a2416; --red-bg: #3b1717;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f151b; --surface: #17202a; --ink: #e6ecf1; --muted: #93a1ae; --line: #2a3643;
+  --accent: #fb923c; --accent-soft: #3a2416;
+  --green: #4ade80; --yellow: #facc15; --orange: #fb923c; --red: #f87171;
+  --green-bg: #13301f; --yellow-bg: #332a0c; --orange-bg: #3a2416; --red-bg: #3b1717;
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); }
+.wrap { max-width: 960px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.05; font-weight: 700; }
+h2 { font-size: 1.45rem; font-weight: 700; }
+h3 { font-size: 1.05rem; font-weight: 700; }
+p { margin: 0; }
+code, .mono { font-family: var(--mono); font-size: .9em; }
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); max-width: 62ch; margin-top: 10px; }
+
+header.top { display: grid; gap: 6px; margin-bottom: 22px; }
+.alertstrip { display: flex; height: 6px; border-radius: 3px; overflow: hidden; width: 160px; margin-bottom: 10px; }
+.alertstrip span { flex: 1; } .alertstrip span:nth-child(1){background:var(--green)} .alertstrip span:nth-child(2){background:var(--yellow)}
+.alertstrip span:nth-child(3){background:var(--orange)} .alertstrip span:nth-child(4){background:var(--red)}
+
+nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg);
+  display: flex; gap: 4px; overflow-x: auto; padding-block: 10px; border-bottom: 1px solid var(--line); margin-bottom: 24px; }
+nav.tabs button { font: 500 14px var(--body); color: var(--muted); background: none; border: 1px solid transparent;
+  padding: 8px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+nav.tabs button[aria-selected="true"] { color: var(--ink); background: var(--surface); border-color: var(--line); }
+nav.tabs button:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.panel { display: grid; gap: 18px; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn { font: 500 14px var(--body); border-radius: 10px; padding: 9px 14px; cursor: pointer; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.good { border-color: var(--green); color: var(--green); }
+.btn.again { border-color: var(--orange); color: var(--orange); }
+select { min-width: 0; font: 14px var(--body); padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); max-width: 100%; }
+
+/* flashcards */
+.progress { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; background: var(--line); }
+.progress i { display: block; height: 100%; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 26px; min-height: 260px;
+  display: grid; align-content: start; gap: 14px; cursor: pointer; }
+.card .q { font-family: var(--display); font-size: clamp(1.25rem, 3.2vw, 1.7rem); line-height: 1.25; font-weight: 500; text-wrap: balance; }
+.card .a { border-top: 1px dashed var(--line); padding-top: 14px; font-size: 16px; max-width: 70ch; }
+.card .hint { color: var(--muted); font-size: 13px; }
+.pill { display: inline-block; font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent); }
+.pill.ok { background: var(--green-bg); color: var(--green); } .pill.no { background: var(--orange-bg); color: var(--orange); }
+.kbd { font: 12px var(--mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; }
+
+/* quiz */
+.opts { display: grid; gap: 8px; margin-top: 12px; }
+.opt { text-align: left; font: 15px var(--body); padding: 11px 14px; border-radius: 10px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); cursor: pointer; }
+.opt.right { border-color: var(--green); background: var(--green-bg); }
+.opt.wrong { border-color: var(--red); background: var(--red-bg); }
+.opt:disabled { cursor: default; }
+.why { margin-top: 10px; color: var(--muted); font-size: 14px; }
+.score { font-family: var(--display); font-size: 2.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* tables */
+.tw { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--mono); white-space: nowrap; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.grid2 { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); }
+.ladder { display: grid; gap: 6px; }
+.ladder div { display: grid; grid-template-columns: 70px 1fr; gap: 10px; align-items: center; font-size: 14px; }
+.ladder b { font: 500 13px var(--mono); text-align: right; }
+.bar { height: 22px; border-radius: 6px; background: var(--accent-soft); display: flex; align-items: center; padding-left: 8px; font-size: 13px; }
+
+/* demo */
+.step { display: grid; grid-template-columns: 58px 1fr; gap: 14px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.step:last-child { border-bottom: 0; }
+.step .t { font: 500 14px var(--mono); color: var(--accent); }
+.who { font: 600 12px var(--mono); padding: 2px 7px; border-radius: 6px; background: var(--ink); color: var(--bg); margin-right: 6px; }
+.say { margin-top: 6px; padding-left: 12px; border-left: 3px solid var(--accent); color: var(--muted); font-style: italic; }
+.check label { display: flex; gap: 10px; align-items: flex-start; padding-block: 6px; cursor: pointer; }
+.check input { margin-top: 4px; accent-color: var(--accent); }
+@media (prefers-reduced-motion: no-preference) { .card, .opt { transition: border-color .15s, background .15s; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="alertstrip" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="label">AI Lab CA · Component 2 · HeatGuard</div>
+    <h1>HeatGuard Viva Trainer</h1>
+    <p class="lede">Drill the 105 viva questions, test yourself on the numbers examiners love, and rehearse the 7-minute demo. Your progress is saved in this browser only.</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button role="tab" id="tab-cards" aria-selected="true" data-tab="cards">Flashcards</button>
+    <button role="tab" id="tab-quiz" aria-selected="false" data-tab="quiz">Self-quiz</button>
+    <button role="tab" id="tab-demo" aria-selected="false" data-tab="demo">Demo run-sheet</button>
+    <button role="tab" id="tab-cheat" aria-selected="false" data-tab="cheat">Cheat sheet</button>
+    <button role="tab" id="tab-rubric" aria-selected="false" data-tab="rubric">Rubric map</button>
+  </nav>
+
+  <!-- FLASHCARDS -->
+  <section class="panel" id="p-cards" role="tabpanel" aria-labelledby="tab-cards">
+    <div class="box">
+      <div class="row" style="justify-content:space-between">
+        <div class="row" style="min-width:0">
+          <label for="cat" class="label">Topic</label>
+          <select id="cat"></select>
+          <select id="mode" aria-label="Which cards">
+            <option value="all">All cards</option>
+            <option value="todo">Not yet known</option>
+          </select>
+        </div>
+        <div class="row">
+          <button class="btn" id="shuffle">Shuffle</button>
+          <button class="btn" id="reset">Reset progress</button>
+        </div>
+      </div>
+      <div style="margin-top:14px" class="row"><span class="label" id="stat"></span></div>
+      <div class="progress" id="prog" style="margin-top:8px" aria-hidden="true"></div>
+    </div>
+    <div class="card" id="card" tabindex="0" aria-live="polite"></div>
+    <div class="row" style="justify-content:space-between">
+      <button class="btn" id="prev">← Previous</button>
+      <div class="row">
+        <button class="btn again" id="again">Again</button>
+        <button class="btn good" id="good">Got it</button>
+      </div>
+      <button class="btn" id="next">Next →</button>
+    </div>
+    <p class="label">Keys: <span class="kbd">Space</span> reveal · <span class="kbd">←</span> <span class="kbd">→</span> move · <span class="kbd">G</span> got it · <span class="kbd">A</span> again</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="panel" id="p-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+    <div class="box row" style="justify-content:space-between">
+      <div><div class="label">Score</div><div class="score" id="score">0 / 0</div></div>
+      <button class="btn primary" id="newquiz">New quiz</button>
+    </div>
+    <div id="quiz" class="panel"></div>
+  </section>
+
+  <!-- DEMO -->
+  <section class="panel" id="p-demo" role="tabpanel" aria-labelledby="tab-demo" hidden>
+    <div class="box check">
+      <h2>Before the lab</h2>
+      <div id="prelist" style="margin-top:8px"></div>
+    </div>
+    <div class="box">
+      <h2>Run-sheet (about 7 minutes)</h2>
+      <p class="lede">A = problem &amp; knowledge base · B = engine, explanation, Prolog · C = UI, testing, robustness. Everyone must still be able to answer anything.</p>
+      <div id="steps" style="margin-top:6px"></div>
+    </div>
+    <div class="box">
+      <h2>If something breaks</h2>
+      <div class="tw" style="margin-top:10px"><table>
+        <tr><th>Problem</th><th>Do this</th></tr>
+        <tr><td>Web page won't load</td><td><code>python -m heatwave_es --json examples/warm_night_escalation.json</code></td></tr>
+        <tr><td>Port 8000 busy</td><td><code>python server.py 9000</code></td></tr>
+        <tr><td>No internet</td><td>Everything still runs; only the web fonts fall back.</td></tr>
+        <tr><td>A test fails after a live edit</td><td><code>git checkout .</code> then <code>python -B -m pytest -q</code></td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- CHEAT SHEET -->
+  <section class="panel" id="p-cheat" role="tabpanel" aria-labelledby="tab-cheat" hidden>
+    <div class="grid2">
+      <div class="box">
+        <h3>IMD heat-wave criteria</h3>
+        <div class="tw" style="margin-top:10px"><table>
+          <tr><th>Region</th><th>Threshold</th><th>Rule</th></tr>
+          <tr><td>Plains</td><td class="num">Tmax ≥ 40 °C</td><td class="num">C1</td></tr>
+          <tr><td>Coastal</td><td class="num">Tmax ≥ 37 °C</td><td class="num">C2</td></tr>
+          <tr><td>Hilly</td><td class="num">Tmax ≥ 30 °C</td><td class="num">C3</td></tr>
+        </table></div>
+        <div class="tw" style="margin-top:12px"><table>
+          <tr><th>Basis</th><th>Heat wave</th><th>Severe</th></tr>
+          <tr><td>Departure</td><td class="num">4.5–6.4 °C (C7)</td><td class="num">&gt; 6.4 °C (C5)</td></tr>
+          <tr><td>Actual Tmax</td><td class="num">≥ 45 °C (C6)</td><td class="num">≥ 47 °C (C4)</td></tr>
+        </table></div>
+        <p class="why">Declared after 2 consecutive days. Day 1 is a watch (A2).</p>
+      </div>
+      <div class="box">
+        <h3>IMD colour code</h3>
+        <div class="tw" style="margin-top:10px"><table>
+          <tr><th>Alert</th><th>When</th><th>Rules</th></tr>
+          <tr><td><span class="sw" style="background:var(--green)"></span>Green</td><td>No heat wave</td><td class="num">A1</td></tr>
+          <tr><td><span class="sw" style="background:var(--yellow)"></span>Yellow</td><td>Heat wave 2–3 days; day 1 = watch</td><td class="num">A2 A3 A8</td></tr>
+          <tr><td><span class="sw" style="background:var(--orange)"></span>Orange</td><td>Heat wave 4–6 days, or severe 2 days</td><td class="num">A4 A6</td></tr>
+          <tr><td><span class="sw" style="background:var(--red)"></span>Red</td><td>Heat wave &gt; 6 days, or severe &gt; 2 days</td><td class="num">A5 A7</td></tr>
+        </table></div>
+        <p class="why">Escalation, one level max: E1 warm night Y→O · E2 humid danger G→Y · E3 extreme heat index with RH ≥ 40 % Y→O.</p>
+      </div>
+      <div class="box">
+        <h3>Salience ladder</h3>
+        <p class="why" style="margin-top:4px">Conflict resolution: refraction → salience → specificity → rule order</p>
+        <div class="ladder" id="ladder" style="margin-top:12px"></div>
+      </div>
+      <div class="box">
+        <h3>Key numbers</h3>
+        <div class="tw" style="margin-top:10px"><table>
+          <tr><td>Rules / sources / layers</td><td class="num">59 / 9 / 9</td></tr>
+          <tr><td>Test scenarios / automated tests</td><td class="num">23 / 35</td></tr>
+          <tr><td>Rule coverage</td><td class="num">59 / 59</td></tr>
+          <tr><td>Heat-index bands</td><td class="num">27 · 32 · 39 · 51 °C</td></tr>
+          <tr><td>Warm night</td><td class="num">Tmax ≥ 40, Tmin dep ≥ 4.5</td></tr>
+          <tr><td>Time per consultation</td><td class="num">≈ 0.3 ms</td></tr>
+          <tr><td>Emergency number</td><td class="num">108 / 112</td></tr>
+        </table></div>
+      </div>
+    </div>
+    <div class="box">
+      <h3>Commands</h3>
+      <div class="tw" style="margin-top:10px"><table>
+        <tr><td><code>python server.py</code></td><td>Web UI at localhost:8000</td></tr>
+        <tr><td><code>python -m heatwave_es</code></td><td>CLI consultation (type <code>why</code>, <code>how alert</code>)</td></tr>
+        <tr><td><code>python -m heatwave_es --rules</code></td><td>Print all 59 rules</td></tr>
+        <tr><td><code>python -m heatwave_es.kb_check</code></td><td>Consistency + coverage</td></tr>
+        <tr><td><code>python -m pytest -q</code></td><td>35 tests</td></tr>
+        <tr><td><code>swipl prolog/heatguard.pl</code> → <code>?- start.</code></td><td>Backward-chaining edition</td></tr>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- RUBRIC -->
+  <section class="panel" id="p-rubric" role="tabpanel" aria-labelledby="tab-rubric" hidden>
+    <div class="box"><div class="tw"><table id="rubric"></table></div></div>
+  </section>
+</div>
+
+<script>
+const DATA = {"cats": ["Problem & domain", "Expert-system theory", "Knowledge base design", "Inference engine implementation", "Explanation & interface", "Testing", "Prolog", "Deployment & engineering", "Limitations & future work (critical-thinking questions)", "Curveballs"], "cards": [{"n": 1, "cat": "Problem & domain", "q": "What problem does your system solve?", "a": "It converts a temperature reading or forecast into an official IMD heat-wave classification, a colour-coded alert, and advice for each stakeholder. That is Phase V of SVU use case KJS-CES-01."}, {"n": 2, "cat": "Problem & domain", "q": "Who are the users?", "a": "Citizens (incl. vulnerable groups and outdoor workers), farmers, health departments and hospitals, municipal authorities and SDMAs, and duty meteorologists who approve Red alerts."}, {"n": 3, "cat": "Problem & domain", "q": "Why is this a good expert-system problem?", "a": "The domain knowledge is explicit, published and rule-shaped (IMD criteria, NDMA Do's and Don'ts). Explanations are needed for trust, and the answers must match official definitions exactly."}, {"n": 4, "cat": "Problem & domain", "q": "Why not machine learning?", "a": "Heat-wave declaration is a *definition*, not a pattern. ML is used in Phase II to forecast temperature; our system interprets the forecast. ML also can't cite a guideline for its output."}, {"n": 5, "cat": "Problem & domain", "q": "State the IMD criteria.", "a": "Threshold 40/37/30 \u00b0C (plains/coastal/hilly); departure 4.5-6.4 \u00b0C = heat wave, > 6.4 \u00b0C = severe; or actual \u2265 45 \u00b0C = heat wave, \u2265 47 \u00b0C = severe; declared after 2 consecutive days."}, {"n": 6, "cat": "Problem & domain", "q": "Why do hilly regions have a 30 \u00b0C threshold?", "a": "Their normal temperatures are much lower, so 30 \u00b0C is already abnormal there."}, {"n": 7, "cat": "Problem & domain", "q": "What is \"departure from normal\"?", "a": "Observed Tmax minus the long-term average Tmax for that date and place (the climatological normal)."}, {"n": 8, "cat": "Problem & domain", "q": "What is a warm night and why does it matter?", "a": "Tmax \u2265 40 and the Tmin departure is \u2265 4.5 \u00b0C. The body doesn't recover overnight, so we escalate Yellow to Orange."}, {"n": 9, "cat": "Problem & domain", "q": "What is the heat index?", "a": "The feels-like temperature from temperature and humidity (NWS Rothfusz regression). Humidity blocks sweat cooling."}, {"n": 10, "cat": "Problem & domain", "q": "Mumbai at 35 \u00b0C is not a heat wave, yet you give Yellow. Why?", "a": "The heat index is about 45 \u00b0C (danger band), so rule E2 escalates for humid heat stress. IMD thresholds alone miss humid danger."}, {"n": 11, "cat": "Problem & domain", "q": "Difference between heat stroke and heat exhaustion?", "a": "Heat stroke has altered mental state or hot, dry skin with a body temperature above 40 \u00b0C and is an emergency (108). Heat exhaustion is heavy sweating, dizziness and weakness; treat with cooling and ORS."}, {"n": 12, "cat": "Problem & domain", "q": "Why don't you give fluids to an unconscious person?", "a": "Choking/aspiration risk; MoHFW first-aid guidance."}, {"n": 13, "cat": "Problem & domain", "q": "What are IMD's colour codes?", "a": "Green = no action, Yellow = be updated, Orange = be prepared, Red = take action."}, {"n": 14, "cat": "Problem & domain", "q": "Where did you get the advice texts?", "a": "NDMA heat action plan guidelines, MoHFW NPCCHH, IMD/ICAR agromet advisories, and the Ahmedabad HAP. Each rule cites its source."}, {"n": 15, "cat": "Problem & domain", "q": "What is the Ahmedabad Heat Action Plan?", "a": "South Asia's first city heat-health plan (2013), triggered by temperature alerts; the model for NDMA's guidelines."}, {"n": 16, "cat": "Problem & domain", "q": "Which phase of the use case do you implement and how would it connect?", "a": "Phase V. It takes Phase II forecasts or Phase III/IV station readings as input (JSON or API), and its output feeds the dashboard and SMS alerts."}, {"n": 17, "cat": "Expert-system theory", "q": "Define an expert system.", "a": "A program that reasons over explicit expert knowledge to solve domain problems at expert level, with an explanation facility."}, {"n": 18, "cat": "Expert-system theory", "q": "Name its components.", "a": "Knowledge base, working memory, inference engine, explanation facility, user interface (and knowledge acquisition)."}, {"n": 19, "cat": "Expert-system theory", "q": "What is working memory?", "a": "The set of facts about the current case: user inputs plus derived facts."}, {"n": 20, "cat": "Expert-system theory", "q": "Knowledge base vs working memory?", "a": "The KB holds general rules that are the same for every case; WM holds the facts of *this* case and changes each run."}, {"n": 21, "cat": "Expert-system theory", "q": "What is a production rule?", "a": "IF conditions (LHS) THEN actions (RHS)."}, {"n": 22, "cat": "Expert-system theory", "q": "Forward vs backward chaining?", "a": "See the table in 4.5. Forward is data \u2192 conclusions; backward is goal \u2192 sub-goals \u2192 facts."}, {"n": 23, "cat": "Expert-system theory", "q": "Why forward chaining for you?", "a": "Data comes first, there are many conclusions, it suits monitoring, and salience control."}, {"n": 24, "cat": "Expert-system theory", "q": "When would backward chaining be better?", "a": "For a single diagnostic question with many possible facts, where you want to ask only what is necessary (as our Prolog edition shows)."}, {"n": 25, "cat": "Expert-system theory", "q": "What is the conflict set / agenda?", "a": "All rules whose conditions are currently satisfied and that have not fired yet."}, {"n": 26, "cat": "Expert-system theory", "q": "What is conflict resolution?", "a": "Choosing which one rule from the conflict set fires next."}, {"n": 27, "cat": "Expert-system theory", "q": "Which strategies do you use, in what order?", "a": "Refraction, salience, specificity, rule order."}, {"n": 28, "cat": "Expert-system theory", "q": "What is refraction and why is it needed?", "a": "A rule fires at most once. Without it, a rule whose conditions stay true would fire forever."}, {"n": 29, "cat": "Expert-system theory", "q": "What is salience?", "a": "A numeric priority on a rule (CLIPS term). Higher fires first."}, {"n": 30, "cat": "Expert-system theory", "q": "What is specificity?", "a": "More conditions means more specific; the specific rule is preferred over the general one."}, {"n": 31, "cat": "Expert-system theory", "q": "What is recency?", "a": "Preferring rules that match the newest facts (OPS5). We don't use it."}, {"n": 32, "cat": "Expert-system theory", "q": "What is the Rete algorithm? Do you use it?", "a": "An efficient incremental matching network that avoids re-testing every rule each cycle. No: with 59 rules, naive matching takes well under a millisecond."}, {"n": 33, "cat": "Expert-system theory", "q": "Is your reasoning monotonic?", "a": "No. Escalation modifies `alert`, so it is non-monotonic. We keep the previous value for explanation."}, {"n": 34, "cat": "Expert-system theory", "q": "What is the closed-world assumption?", "a": "Unknown means false. Our conditions on missing facts fail; Prolog uses negation-as-failure."}, {"n": 35, "cat": "Expert-system theory", "q": "What is MYCIN and what did it contribute?", "a": "A 1970s Stanford medical expert system using backward chaining and certainty factors. It introduced WHY/HOW explanations, which we also implement."}, {"n": 36, "cat": "Expert-system theory", "q": "What is the knowledge acquisition bottleneck?", "a": "Extracting and formalising expert knowledge is slow and error-prone. We experienced it translating IMD wording into rules."}, {"n": 37, "cat": "Expert-system theory", "q": "What is an expert system shell?", "a": "An inference engine without domain knowledge (CLIPS, Drools, experta). Our `engine.py` is a mini shell."}, {"n": 38, "cat": "Expert-system theory", "q": "What are certainty factors?", "a": "Numbers from \u22121 to 1 attached to rules and facts to express belief (MYCIN). We don't use them; a possible extension."}, {"n": 39, "cat": "Expert-system theory", "q": "Name some classic expert systems.", "a": "MYCIN, DENDRAL, XCON/R1, PROSPECTOR, CADUCEUS."}, {"n": 40, "cat": "Expert-system theory", "q": "What makes a knowledge base \"consistent\"?", "a": "No two rules derive contradictory conclusions from the same situation, no redundant rules, and no rules that can never fire. We check all three automatically."}, {"n": 41, "cat": "Knowledge base design", "q": "How many rules? Why that many?", "a": "59, across 9 layers covering triage, validation, derivation, classification, alert, escalation, governance, advice and summary. Each guideline clause becomes a rule."}, {"n": 42, "cat": "Knowledge base design", "q": "How are rules organised?", "a": "By layer (group) and salience; rule ids show the layer (T, V, D, C, W, H, A, E, G, P, F, M, X, K)."}, {"n": 43, "cat": "Knowledge base design", "q": "How do you prevent contradictory categories?", "a": "C4-C7 require `hw_category is unknown`, and severe rules have higher salience, so the first conclusion wins and others can't fire."}, {"n": 44, "cat": "Knowledge base design", "q": "Why have a default rule C8?", "a": "To always conclude something. It is the \"otherwise\" case with low salience, so it fires only when no criterion matched."}, {"n": 45, "cat": "Knowledge base design", "q": "Why can severe Tmax \u2265 47 and departure 5.2 both match?", "a": "They're different IMD criteria. Severe rules have higher salience (78 vs 76), so severe wins: the conservative choice."}, {"n": 46, "cat": "Knowledge base design", "q": "Why is triage salience higher than validation?", "a": "The emergency advice doesn't depend on the temperature data, and a bad reading must never suppress \"call 108\"."}, {"n": 47, "cat": "Knowledge base design", "q": "Why must escalation come before advice?", "a": "Advice depends on the final alert level. If advice fired first, rules for `alert == YELLOW` would fire on the stale value. For example, an authority would get both the Yellow (X1) and the Orange (X2) action lists, a contradictory mix (Drill 3)."}, {"n": 48, "cat": "Knowledge base design", "q": "Why does E3 require RH \u2265 40 %?", "a": "The Rothfusz heat-index formula is unreliable in very dry air; without the condition, dry 44 \u00b0C days became Orange. Found by testing."}, {"n": 49, "cat": "Knowledge base design", "q": "Why only one escalation level?", "a": "To avoid over-warning. Responsible AI means communicating risk proportionately."}, {"n": 50, "cat": "Knowledge base design", "q": "What does G1 do?", "a": "It flags Red alerts for human (meteorologist) approval before dissemination: the use case's human-in-the-loop requirement."}, {"n": 51, "cat": "Knowledge base design", "q": "What happens if the duration is unknown?", "a": "A8 gives a conservative Yellow watch, and the output says so."}, {"n": 52, "cat": "Knowledge base design", "q": "What happens if humidity is unknown?", "a": "The heat-index rules can't fire, and G2 adds a note saying the humid-heat check was skipped."}, {"n": 53, "cat": "Knowledge base design", "q": "How do you compute the departure?", "a": "Rule D1 asserts a computed fact `departure = tmax \u2212 tmax_normal` using a lambda."}, {"n": 54, "cat": "Knowledge base design", "q": "How do you represent multi-valued facts like symptoms?", "a": "As lists, tested with the `contains` and `contains_any` operators."}, {"n": 55, "cat": "Knowledge base design", "q": "Show the rule dependency.", "a": "`docs/img/rule_dependency.png`: inputs \u2192 derived \u2192 classification \u2192 alert \u2192 escalation \u2192 conclusions."}, {"n": 56, "cat": "Knowledge base design", "q": "How would you add a new hazard (e.g. cold wave)?", "a": "Add a new rule layer with IMD cold-wave criteria; the engine needs no change."}, {"n": 57, "cat": "Inference engine implementation", "q": "Walk me through `run()`.", "a": "Load inputs into WM. Loop: build the agenda, sort by priority, fire the first rule, mark it fired, apply its actions, record the trace, stop on halt or an empty agenda."}, {"n": 58, "cat": "Inference engine implementation", "q": "How is the priority computed?", "a": "`(-salience, -len(conditions), index)`, sorted ascending."}, {"n": 59, "cat": "Inference engine implementation", "q": "How does a condition handle a missing fact?", "a": "It returns False (except the `unknown` operator), so there is no crash."}, {"n": 60, "cat": "Inference engine implementation", "q": "What if a user types text where a number is expected?", "a": "The CLI re-asks. Through the API, the engine catches the `TypeError` in the action and halts with \"Invalid input\u2026\"."}, {"n": 61, "cat": "Inference engine implementation", "q": "How do you guarantee termination?", "a": "Refraction (each of 59 rules fires at most once) plus a `max_cycles` safety limit."}, {"n": 62, "cat": "Inference engine implementation", "q": "Time complexity?", "a": "Each cycle checks all R rules \u00d7 C conditions; at most R cycles, so O(R\u00b2\u00b7C) worst case \u2248 59\u00b2 \u00d7 4. That's trivial."}, {"n": 63, "cat": "Inference engine implementation", "q": "What does HALT do?", "a": "It stops inference immediately (validation errors). The trace and any emergency advice already produced are kept."}, {"n": 64, "cat": "Inference engine implementation", "q": "What is `Fact.previous` for?", "a": "It keeps the old value when a rule modifies a fact, so HOW explains that Orange came from Yellow without looping."}, {"n": 65, "cat": "Inference engine implementation", "q": "How is HOW implemented?", "a": "Recursively: fact \u2192 the rule that produced it \u2192 that rule's condition facts \u2192 \u2026 \u2192 user inputs."}, {"n": 66, "cat": "Inference engine implementation", "q": "How is WHY implemented in the CLI?", "a": "`rules_using(fact)` lists the rules whose conditions mention the fact being asked, plus a reason string."}, {"n": 67, "cat": "Inference engine implementation", "q": "Is the engine domain-independent?", "a": "Yes. `engine.py` has no heat-specific code; any rule list works (the conflict-resolution unit test uses toy rules)."}, {"n": 68, "cat": "Inference engine implementation", "q": "Why write your own engine instead of experta/CLIPS?", "a": "To demonstrate understanding of matching, conflict resolution and explanation; to avoid dependencies (experta is unmaintained on modern Python); and to control the trace format."}, {"n": 69, "cat": "Explanation & interface", "q": "What does your trace show?", "a": "Cycle, rule id and name, salience, source, every condition with its actual value, facts asserted, the WHY justification, and the competing rules."}, {"n": 70, "cat": "Explanation & interface", "q": "HOW vs WHY?", "a": "HOW explains how a conclusion was reached (after the run). WHY explains why a question is being asked (during the run)."}, {"n": 71, "cat": "Explanation & interface", "q": "How does the UI handle bad input?", "a": "Range-checked sliders and number inputs; the CLI re-asks with a hint; validation rules show an \"Input rejected\" card."}, {"n": 72, "cat": "Explanation & interface", "q": "Why three interfaces?", "a": "The CLI for the lab and testing, the web UI for usability, and Prolog to demonstrate backward chaining."}, {"n": 73, "cat": "Explanation & interface", "q": "Does the React UI contain rules?", "a": "No. It calls the Python API, so there is one source of truth."}, {"n": 74, "cat": "Explanation & interface", "q": "What is React Bits?", "a": "An open-source library of animated React components (Aurora, Stepper, AnimatedList\u2026) copied into our project; the visual layer only."}, {"n": 75, "cat": "Testing", "q": "How many tests?", "a": "35 automated tests: 23 scenarios plus 12 unit tests. All pass."}, {"n": 76, "cat": "Testing", "q": "What does a scenario check?", "a": "Expected conclusions, the rules that must fire, the rules that must not fire, and the halting rule."}, {"n": 77, "cat": "Testing", "q": "What is rule coverage?", "a": "The percentage of rules that fire in at least one test. Ours is 59/59 = 100 %."}, {"n": 78, "cat": "Testing", "q": "Give edge cases you tested.", "a": "39.9 vs 40.0 \u00b0C, departure exactly 4.5, Tmax 62, RH 140 %, 0 days, normal 70 \u00b0C, Tmin > Tmax, text input, missing data, humid heat below the threshold."}, {"n": 79, "cat": "Testing", "q": "How do you know your checker works?", "a": "We injected a duplicate, a dead rule and a contradiction, and it reported all three."}, {"n": 80, "cat": "Testing", "q": "Did Python and Prolog agree?", "a": "Yes, on all 6 shared test cases."}, {"n": 81, "cat": "Testing", "q": "What bugs did testing find?", "a": "The 5 listed in section 8."}, {"n": 82, "cat": "Prolog", "q": "How does your Prolog version work?", "a": "The rules are `rule/4` facts, and a meta-interpreter `prove/3` does backward chaining, asking the user for missing facts and building a proof tree."}, {"n": 83, "cat": "Prolog", "q": "Why a meta-interpreter instead of plain Prolog clauses?", "a": "To capture the proof for HOW and the goal stack for WHY; plain Prolog doesn't record them."}, {"n": 84, "cat": "Prolog", "q": "How does Prolog resolve conflicts?", "a": "Clause order plus depth-first search; we add `once/1` so the first (most severe) proof wins."}, {"n": 85, "cat": "Prolog", "q": "What is `assertz(known(A, V))` for?", "a": "Memoisation: each question is asked only once."}, {"n": 86, "cat": "Prolog", "q": "What bug did you fix in Prolog?", "a": "`category(none)` succeeded on a heat-wave day because the catch-all clause was called with a bound argument. Fixed by computing unbound, then comparing."}, {"n": 87, "cat": "Prolog", "q": "What does `?- run_tests_cases.` do?", "a": "Runs 6 cases in batch mode with no questions; missing facts are treated as unknown."}, {"n": 88, "cat": "Deployment & engineering", "q": "How do you run it?", "a": "`python server.py`, `python -m heatwave_es`, or `swipl prolog/heatguard.pl`."}, {"n": 89, "cat": "Deployment & engineering", "q": "Dependencies?", "a": "The core and the API use only the Python standard library; pytest, Streamlit and python-docx are optional; the UI needs Node only to rebuild."}, {"n": 90, "cat": "Deployment & engineering", "q": "How is it deployed?", "a": "Vercel: the static React build plus Python serverless functions in `api/`."}, {"n": 91, "cat": "Deployment & engineering", "q": "Why not Flask?", "a": "It isn't needed. Stdlib `http.server` is enough and means zero installs on lab PCs."}, {"n": 92, "cat": "Limitations & future work (critical-thinking questions)", "q": "Biggest limitation?", "a": "Crisp thresholds: 39.9 \u00b0C gives Green and 40.0 \u00b0C gives Yellow, although real risk is continuous. Fuzzy logic or certainty factors would help."}, {"n": 93, "cat": "Limitations & future work (critical-thinking questions)", "q": "What can't it do that IMD does?", "a": "Spatial aggregation (\u2265 2 stations per sub-division), and forecast uncertainty."}, {"n": 94, "cat": "Limitations & future work (critical-thinking questions)", "q": "How would you add uncertainty?", "a": "Certainty factors on forecast-based facts, or probabilistic alerts (e.g. \"70 % chance of Orange\")."}, {"n": 95, "cat": "Limitations & future work (critical-thinking questions)", "q": "Can it learn?", "a": "No. New knowledge needs manual rule edits; that is a classic expert-system limitation."}, {"n": 96, "cat": "Limitations & future work (critical-thinking questions)", "q": "How would it scale to 1000 rules?", "a": "Use the Rete algorithm, rule modules or namespaces, and stronger static checking."}, {"n": 97, "cat": "Limitations & future work (critical-thinking questions)", "q": "How would you combine it with the LLM part of the use case?", "a": "The LLM writes natural, multilingual advisory text; our rules decide *what* must be said, and the trace fact-checks the LLM output."}, {"n": 98, "cat": "Limitations & future work (critical-thinking questions)", "q": "Ethical concerns?", "a": "Over-warning reduces trust and under-warning costs lives, hence human review of Red alerts. It is a decision-support tool, not a replacement for official IMD warnings."}, {"n": 99, "cat": "Limitations & future work (critical-thinking questions)", "q": "What would you change if you did it again?", "a": "Model multi-day forecasts, add a cold-wave module, multilingual output (Marathi/Hindi), and SMS integration."}, {"n": 100, "cat": "Limitations & future work (critical-thinking questions)", "q": "What did you personally learn?", "a": "Each member gives their own answer, linked to their D6 reflection."}, {"n": 101, "cat": "Curveballs", "q": "\"Your rule C6 and C7 can both match, isn't that redundant?\"", "a": "No. They encode two *different* IMD criteria (absolute vs departure). Either alone proves a heat wave; the `hw_category unknown` guard means only one fires."}, {"n": 102, "cat": "Curveballs", "q": "\"Isn't salience just hard-coding the order?\"", "a": "It encodes domain priority (life safety > data validity > classification > advice). Within a layer, the order emerges from specificity and rule order. CLIPS uses the same mechanism."}, {"n": 103, "cat": "Curveballs", "q": "\"What if two rules conclude different alerts?\"", "a": "A1-A8 require `alert is unknown`, so the first concluded alert stands; only explicit escalation rules modify it, and that is logged."}, {"n": 104, "cat": "Curveballs", "q": "\"Prove your system is correct.\"", "a": "We can't prove it in general, but it is validated against the official criteria on 23 documented scenarios, including every boundary, with 100 % rule coverage and automated consistency checks."}, {"n": 105, "cat": "Curveballs", "q": "\"Where is the AI? It's just if-else.\"", "a": "It is *symbolic AI*: knowledge is separated from control. A generic inference engine decides which rules apply through conflict resolution, chains derived facts, and explains itself. If-else code hard-wires the control flow and can't explain or be extended rule by rule."}]};
+
+/* ---------- storage (per-viewer convenience only) ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('hg-viva-' + k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('hg-viva-' + k, JSON.stringify(v)); } catch {} }
+};
+const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`(.+?)`/g, '<code>$1</code>').replace(/\*(.+?)\*/g, '<i>$1</i>');
+
+/* ---------- tabs ---------- */
+const tabs = [...document.querySelectorAll('nav.tabs button')];
+function showTab(id) {
+  tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === id)));
+  ['cards', 'quiz', 'demo', 'cheat', 'rubric'].forEach(t => { document.getElementById('p-' + t).hidden = t !== id; });
+  store.set('tab', id);
+}
+tabs.forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+/* ---------- flashcards ---------- */
+const known = new Set(store.get('known', []));
+let deck = [], pos = 0, revealed = false;
+const catSel = document.getElementById('cat');
+catSel.innerHTML = '<option value="">All topics (' + DATA.cards.length + ')</option>' +
+  DATA.cats.map(c => `<option value="${esc(c)}">${esc(c.split(' (')[0])}</option>`).join('');
+function build(shuffle) {
+  const cat = catSel.value, mode = document.getElementById('mode').value;
+  deck = DATA.cards.filter(c => (!cat || c.cat === cat) && (mode === 'all' || !known.has(c.n)));
+  if (shuffle) for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; }
+  pos = 0; revealed = false; render();
+}
+function render() {
+  const card = document.getElementById('card');
+  const total = DATA.cards.length;
+  document.getElementById('stat').textContent = `${known.size} of ${total} known · card ${deck.length ? pos + 1 : 0} of ${deck.length}`;
+  const prog = document.getElementById('prog');
+  prog.innerHTML = `<i style="width:${known.size / total * 100}%;background:var(--green)"></i>`;
+  if (!deck.length) { card.innerHTML = '<div class="q">Nothing left in this set.</div><div class="hint">Switch to "All cards" or another topic.</div>'; return; }
+  const c = deck[pos];
+  card.innerHTML = `<div class="row"><span class="pill">Q${c.n} · ${esc(c.cat.split(' (')[0])}</span>${known.has(c.n) ? '<span class="pill ok">known</span>' : ''}</div>
+    <div class="q">${md(c.q)}</div>
+    ${revealed ? `<div class="a">${md(c.a)}</div>` : '<div class="hint">Say your answer out loud, then click or press Space to check.</div>'}`;
+}
+function move(d) { if (!deck.length) return; pos = (pos + d + deck.length) % deck.length; revealed = false; render(); }
+function mark(ok) {
+  if (!deck.length) return; const n = deck[pos].n;
+  ok ? known.add(n) : known.delete(n); store.set('known', [...known]);
+  if (document.getElementById('mode').value === 'todo' && ok) { deck.splice(pos, 1); if (pos >= deck.length) pos = 0; revealed = false; render(); }
+  else move(1);
+}
+document.getElementById('card').addEventListener('click', () => { revealed = !revealed; render(); });
+document.getElementById('next').onclick = () => move(1);
+document.getElementById('prev').onclick = () => move(-1);
+document.getElementById('good').onclick = () => mark(true);
+document.getElementById('again').onclick = () => mark(false);
+document.getElementById('shuffle').onclick = () => build(true);
+document.getElementById('reset').onclick = e => {
+  const b = e.currentTarget;
+  if (b.dataset.armed) { known.clear(); store.set('known', []); delete b.dataset.armed; b.textContent = 'Reset progress'; build(false); }
+  else { b.dataset.armed = '1'; b.textContent = 'Click again to reset'; setTimeout(() => { delete b.dataset.armed; b.textContent = 'Reset progress'; }, 3000); }
+};
+catSel.onchange = () => build(false);
+document.getElementById('mode').onchange = () => build(false);
+document.addEventListener('keydown', e => {
+  if (document.getElementById('p-cards').hidden || e.target.tagName === 'SELECT') return;
+  if (e.key === ' ') { e.preventDefault(); revealed = !revealed; render(); }
+  else if (e.key === 'ArrowRight') move(1);
+  else if (e.key === 'ArrowLeft') move(-1);
+  else if (e.key.toLowerCase() === 'g') mark(true);
+  else if (e.key.toLowerCase() === 'a') mark(false);
+});
+
+/* ---------- quiz ---------- */
+const QUIZ = [
+  ['IMD heat-wave threshold for the plains?', ['37 °C', '40 °C', '45 °C', '30 °C'], 1, 'Plains 40, coastal 37, hilly 30 (rules C1-C3).'],
+  ['Threshold for a coastal station?', ['35 °C', '37 °C', '40 °C', '42 °C'], 1, 'Rule C2. That is why Mumbai at 35 °C is not an IMD heat wave.'],
+  ['Departure from normal that makes a (non-severe) heat wave?', ['3.5–4.4 °C', '4.5–6.4 °C', '6.5–8.0 °C', 'Any positive departure'], 1, 'Rule C7; more than 6.4 °C is severe (C5).'],
+  ['Actual Tmax that is a severe heat wave regardless of the normal?', ['45 °C', '46 °C', '47 °C', '50 °C'], 2, 'C4: ≥ 47 °C severe; C6: ≥ 45 °C heat wave.'],
+  ['Hilly station: Tmax 31.5 °C, normal 24.5 °C. Verdict?', ['No heat wave', 'Heat wave', 'Severe heat wave', 'Invalid input'], 2, 'Threshold 30 met; departure +7.0 > 6.4 → severe (TC05).'],
+  ['Plains: Tmax 39.9 °C with a +5 °C departure?', ['Heat wave', 'Severe', 'No heat wave', 'Watch'], 2, 'The 40 °C threshold is not reached, so the departure is irrelevant (TC12).'],
+  ['How long must criteria hold before IMD declares a heat wave?', ['1 day', '2 consecutive days', '3 days', '1 week'], 1, 'Day 1 is issued as a watch (rule A2).'],
+  ['Severe heat wave persisting 3 days gives…', ['Yellow', 'Orange', 'Red', 'Green'], 2, 'A7: severe for more than 2 days → Red.'],
+  ['Heat wave (not severe) for 5 days gives…', ['Yellow', 'Orange', 'Red', 'Green'], 1, 'A4: 4–6 days → Orange (TC23).'],
+  ['Our conflict-resolution order is…', ['Recency → salience → order', 'Refraction → salience → specificity → rule order', 'Specificity → salience → random', 'Rule order only'], 1, 'Implemented as the sort key (-salience, -#conditions, index) plus the fired set.'],
+  ['Why is refraction needed?', ['Speed', 'To guarantee termination', 'To ask fewer questions', 'For the explanation'], 1, 'Without it, a rule whose conditions stay true would fire forever.'],
+  ['Which layer has the highest salience?', ['Validation', 'Triage', 'Classification', 'Advice'], 1, 'Triage 107-111: a bad thermometer reading must never suppress "call 108".'],
+  ['Which statement is true?', ['Python uses backward chaining', 'Prolog edition uses forward chaining', 'Python is forward, Prolog is backward', 'Both are forward'], 2, 'Data-driven Python engine; goal-driven Prolog meta-interpreter.'],
+  ['Why does E3 require RH ≥ 40 %?', ['IMD says so', 'The Rothfusz heat index exaggerates in very dry air', 'To reduce rule count', 'Humidity below 40 is invalid'], 1, 'Found by testing: dry 44 °C days were wrongly escalating to Orange.'],
+  ['HOW explains…', ['why a question is asked', 'how a conclusion was derived', 'how to install the system', 'how fast it ran'], 1, 'WHY is asked during questioning; HOW after a conclusion.'],
+  ['In TC09, C6 and C7 both match. Why does C6 fire?', ['Higher salience', 'More conditions', 'Rule order (equal salience and specificity)', 'Recency'], 2, 'Both have salience 76 and 3 conditions, so the earlier rule wins.'],
+  ['Why is the system non-monotonic?', ['It uses Prolog', 'Escalation rules modify the alert fact', 'It deletes inputs', 'It learns'], 1, 'Yellow → Orange; the old value is kept in Fact.previous for HOW.'],
+  ['What does rule G1 do?', ['Halts on bad input', 'Flags Red alerts for meteorologist sign-off', 'Computes the heat index', 'Writes the summary'], 1, 'Human-in-the-loop requirement from the use-case governance table.'],
+  ['Which is a heat-stroke sign in our rules?', ['Muscle cramps', 'Heavy sweating', 'Confusion', 'Headache'], 2, 'T1: confusion, unconsciousness or seizure; T2: hot, dry skin with high body temperature.'],
+  ['Matching algorithm used?', ['Rete', 'Naive re-matching each cycle', 'TREAT', 'Neural network'], 1, '59 rules: about 0.3 ms per consultation, so Rete is unnecessary.'],
+  ['Rule coverage of the test suite?', ['49 / 59', '55 / 59', '59 / 59', 'Not measured'], 2, 'kb_check confirms every rule fires in at least one of the 23 scenarios.'],
+  ['What happens if humidity is unknown?', ['Crash', 'Heat-index rules skip and G2 adds a note', 'Assumes 50 %', 'Red alert'], 1, 'Missing facts make conditions false; the gap is reported.']
+];
+let qs = [], answered = 0, correct = 0;
+function newQuiz() {
+  qs = [...QUIZ].sort(() => Math.random() - 0.5).slice(0, 10); answered = 0; correct = 0;
+  const box = document.getElementById('quiz');
+  box.innerHTML = qs.map((q, i) => `<div class="box"><div class="label">Question ${i + 1} of ${qs.length}</div>
+    <h3 style="margin-top:6px">${esc(q[0])}</h3><div class="opts">${q[1].map((o, j) =>
+      `<button class="opt" data-q="${i}" data-o="${j}">${esc(o)}</button>`).join('')}</div><div class="why" id="why${i}" hidden></div></div>`).join('');
+  box.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    const i = +b.dataset.q, j = +b.dataset.o, q = qs[i];
+    box.querySelectorAll(`.opt[data-q="${i}"]`).forEach(x => { x.disabled = true; if (+x.dataset.o === q[2]) x.classList.add('right'); });
+    if (j !== q[2]) b.classList.add('wrong'); else correct++;
+    answered++; const w = document.getElementById('why' + i); w.hidden = false; w.textContent = (j === q[2] ? 'Correct. ' : 'Not quite. ') + q[3];
+    document.getElementById('score').textContent = `${correct} / ${answered}`;
+  });
+  document.getElementById('score').textContent = '0 / 0';
+}
+document.getElementById('newquiz').onclick = newQuiz;
+
+/* ---------- demo ---------- */
+const PRE = ['git pull, then python -m pytest -q shows 35 passed', 'python server.py running; browser on localhost:8000',
+  'Terminal open in the repo folder; swipl --version works', 'Report PDF open in a second tab', 'Terminal font enlarged',
+  'Each member has written their own D6 reflection', 'Names and roll numbers filled in the report'];
+const doneSet = new Set(store.get('pre', []));
+document.getElementById('prelist').innerHTML = PRE.map((p, i) =>
+  `<label><input type="checkbox" id="pre${i}" ${doneSet.has(i) ? 'checked' : ''}><span>${esc(p)}</span></label>`).join('');
+PRE.forEach((_, i) => document.getElementById('pre' + i).onchange = e => {
+  e.target.checked ? doneSet.add(i) : doneSet.delete(i); store.set('pre', [...doneSet]); });
+const STEPS = [
+  ['0:00', 'A', 'Open the web UI hero.', 'Our project is HeatGuard, a rule-based expert system for SVU use case KJS-CES-01. It turns a temperature reading into an official IMD heat-wave verdict, a colour-coded alert and advice for each stakeholder, with every step explained.'],
+  ['0:45', 'A', 'Knowledge section: search "47", click rule C4.', 'Every rule cites its guideline. C4 is IMD\'s absolute severe criterion: 47 °C or more.'],
+  ['1:30', 'B', 'Presets TC01 (Green) → TC04 (Yellow watch); set days to 3.', 'IMD declares a heat wave only after 2 consecutive days. Day 1 is a watch; day 3 is declared.'],
+  ['2:30', 'B', 'Preset TC09, then the Reasoning section and the HOW tree.', 'Cycle 1 shows salience, cycles 5 and 8 rule order, cycle 11 specificity. E1 escalates Yellow to Orange for the warm night, and only then does the severe advice P3 become eligible.'],
+  ['3:45', 'C', 'Preset TC06 (heat stroke).', 'Triage has the highest salience, so the emergency advice fires before any weather reasoning.'],
+  ['4:15', 'C', 'Preset TC07 (Tmax 62 °C).', 'Validation halts instead of issuing a misleading alert.'],
+  ['4:45', 'C', 'Terminal: python -m heatwave_es; type why, then abc.', 'The CLI explains why it asks, re-asks on bad input and never crashes.'],
+  ['5:30', 'B', 'swipl prolog/heatguard.pl → ?- start. with hilly, 26.', 'Backward chaining asks only what the proof needs: no normal temperature, no duration.'],
+  ['6:15', 'C', 'python -m pytest -q and python -m heatwave_es.kb_check', '35 tests pass, 0 consistency problems, 59 of 59 rules covered.']
+];
+document.getElementById('steps').innerHTML = STEPS.map(s => `<div class="step"><div class="t">${s[0]}</div>
+  <div><div><span class="who">${s[1]}</span>${esc(s[2])}</div><div class="say">“${esc(s[3])}”</div></div></div>`).join('');
+
+/* ---------- cheat ladder ---------- */
+const LADDER = [['107–111', 'Triage (T)'], ['98–100', 'Validation (V, D0)'], ['90', 'Derivation (D)'], ['70–80', 'Classification (C, W, H)'],
+  ['55–62', 'IMD alert (A)'], ['49–50', 'Escalation (E)'], ['40', 'Governance (G)'], ['20', 'Advice (P F M X)'], ['0', 'Summary (K1)']];
+document.getElementById('ladder').innerHTML = LADDER.map((l, i) =>
+  `<div><b>${l[0]}</b><span class="bar" style="width:${100 - i * 9}%">${esc(l[1])}</span></div>`).join('');
+
+/* ---------- rubric ---------- */
+const RUBRIC = [
+  ['Problem & domain', 4, 'SVU use case KJS-CES-01, Phase V; 9 cited sources (IMD, NDMA, MoHFW, NWS, ICAR, Ahmedabad HAP).', 'Report D1, Sources section, the source on every trace line.'],
+  ['Knowledge base', 5, '59 rules in 9 layers; kb_check: 0 dead, redundant or contradictory rules; 59/59 covered.', 'python -m heatwave_es --rules and kb_check; dependency diagram.'],
+  ['Inference engine', 5, 'Forward chaining; refraction → salience → specificity → order; validation halts; missing and junk input handled; Prolog backward chaining.', 'Trace "beat:" lists; TC07, TC08, TC10, TC20-22.'],
+  ['Explanation', 2, 'Trace with actual values, WHY, source and competitors; HOW proof tree; WHY at questions.', 'how alert in the CLI; Reasoning section.'],
+  ['User interface', 2, 'CLI with re-asking, prefixes, skip, why and how; React web UI; Prolog consultation.', 'Type abc in the CLI; the UI wizard and presets.'],
+  ['Demo & viva', 2, 'Study guide, 105 Q&As, this trainer.', 'Run-sheet tab.'],
+  ['Report, reflection, testing', 5, '18-page report; 23 scenarios + 12 unit tests = 35; bugs found by testing; individual reflections.', 'python -m pytest -q; Test_Case_Report.md.']
+];
+document.getElementById('rubric').innerHTML = '<tr><th>Criterion</th><th>Marks</th><th>What we have</th><th>Show</th></tr>' +
+  RUBRIC.map(r => `<tr><td><b>${esc(r[0])}</b></td><td class="num">${r[1]}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`).join('');
+
+build(false); newQuiz(); showTab(store.get('tab', 'cards'));
+</script>

@@ -20,7 +20,7 @@ From a temperature observation or forecast, HeatGuard:
 | D2 Knowledge base (59 IF-THEN rules, dependency diagram) | `heatwave_es/knowledge_base.py`, report section D2, `docs/img/rule_dependency.png` |
 | D3 Implementation (forward-chaining engine + explanation) | `heatwave_es/`, `app.py`, `prolog/heatguard.pl` |
 | D4 Test case report (23 scenarios, 100 % rule coverage) | `docs/Test_Case_Report.md`, report section D4, `tests/` |
-| D5 Demo + viva | `docs/VIVA_PREP.md` |
+| D5 Demo + viva | `docs/STUDY_GUIDE.md` (full guide, 105 Q&As), `docs/viva-trainer.html` (flashcards + quiz), `docs/VIVA_PREP.md` |
 | D6 Reflection (individual) | report section D6 (each member fills in their own) |
 
 ## HeatGuard Atlas: the web UI
