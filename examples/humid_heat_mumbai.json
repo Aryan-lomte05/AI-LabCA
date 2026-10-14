@@ -1,0 +1,12 @@
+{
+  "role": "citizen",
+  "region": "coastal",
+  "tmax": 35.0,
+  "tmax_normal": 33.0,
+  "heat_days": 2,
+  "rh": 60,
+  "vulnerable": [
+    "elderly"
+  ],
+  "symptoms": []
+}

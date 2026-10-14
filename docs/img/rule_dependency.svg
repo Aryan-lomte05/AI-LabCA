@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1290" height="580" viewBox="0 0 1290 580" font-family="Carlito, Calibri, Arial, sans-serif">
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#78909c"/></marker></defs>
+<rect width="1290" height="580" fill="white"/>
+<path d="M190,53.0 C210.0,53.0 210.0,53.0 228,53.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,118.0 C210.0,118.0 210.0,53.0 228,53.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,118.0 C210.0,118.0 210.0,148.0 228,148.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,183.0 C210.0,183.0 210.0,148.0 228,148.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,118.0 C210.0,118.0 210.0,313.0 228,313.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,313.0 C210.0,313.0 210.0,313.0 228,313.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,378.0 C210.0,378.0 210.0,378.0 228,378.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,453.0 C210.0,453.0 210.0,453.0 228,453.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M400,53.0 C420.0,53.0 420.0,103.0 438,103.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M400,148.0 C420.0,148.0 420.0,103.0 438,103.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,118.0 C315.0,118.0 315.0,103.0 438,103.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M400,313.0 C420.0,313.0 420.0,313.0 438,313.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M400,378.0 C420.0,378.0 420.0,378.0 438,378.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M400,453.0 C420.0,453.0 420.0,453.0 438,453.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M610,103.0 C630.0,103.0 630.0,173.0 648,173.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M190,248.0 C420.0,248.0 420.0,173.0 648,173.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M820,173.0 C840.0,173.0 840.0,273.0 858,273.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M610,378.0 C735.0,378.0 735.0,273.0 858,273.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M610,313.0 C735.0,313.0 735.0,273.0 858,273.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M1030,273.0 C1055.0,273.0 1055.0,133.0 1078,133.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M1030,273.0 C1055.0,273.0 1055.0,213.0 1078,213.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<path d="M1030,273.0 C1055.0,273.0 1055.0,323.0 1078,323.0" fill="none" stroke="#90a4ae" stroke-width="1.4" marker-end="url(#a)"/>
+<rect x="20" y="30" width="170" height="46" rx="8" fill="#eceff1" stroke="#607d8b" stroke-width="1.6"/>
+<text x="105.0" y="49" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">region</text>
+<text x="105.0" y="66" text-anchor="middle" font-size="11.5" fill="#455a64">plains / coastal / hilly</text>
+<rect x="20" y="95" width="170" height="46" rx="8" fill="#eceff1" stroke="#607d8b" stroke-width="1.6"/>
+<text x="105.0" y="114" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">tmax</text>
+<text x="105.0" y="131" text-anchor="middle" font-size="11.5" fill="#455a64">max temperature</text>
+<rect x="20" y="160" width="170" height="46" rx="8" fill="#eceff1" stroke="#607d8b" stroke-width="1.6"/>
+<text x="105.0" y="179" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">tmax_normal</text>
+<text x="105.0" y="196" text-anchor="middle" font-size="11.5" fill="#455a64">climatological normal</text>
+<rect x="20" y="225" width="170" height="46" rx="8" fill="#eceff1" stroke="#607d8b" stroke-width="1.6"/>
+<text x="105.0" y="244" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">heat_days</text>
+<text x="105.0" y="261" text-anchor="middle" font-size="11.5" fill="#455a64">persistence</text>
+<rect x="20" y="290" width="170" height="46" rx="8" fill="#eceff1" stroke="#607d8b" stroke-width="1.6"/>
+<text x="105.0" y="309" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">rh</text>
+<text x="105.0" y="326" text-anchor="middle" font-size="11.5" fill="#455a64">relative humidity</text>
+<rect x="20" y="355" width="170" height="46" rx="8" fill="#eceff1" stroke="#607d8b" stroke-width="1.6"/>
+<text x="105.0" y="374" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">tmin, tmin_normal</text>
+<text x="105.0" y="391" text-anchor="middle" font-size="11.5" fill="#455a64">night temperature</text>
+<rect x="20" y="430" width="170" height="46" rx="8" fill="#eceff1" stroke="#607d8b" stroke-width="1.6"/>
+<text x="105.0" y="449" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">symptoms</text>
+<text x="105.0" y="466" text-anchor="middle" font-size="11.5" fill="#455a64">citizen / health</text>
+<rect x="20" y="505" width="170" height="46" rx="8" fill="#eceff1" stroke="#607d8b" stroke-width="1.6"/>
+<text x="105.0" y="524" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">role, vulnerable, farm</text>
+<text x="105.0" y="541" text-anchor="middle" font-size="11.5" fill="#455a64">stakeholder profile</text>
+<rect x="230" y="30" width="170" height="46" rx="8" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.6"/>
+<text x="315.0" y="49" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">threshold_met</text>
+<text x="315.0" y="66" text-anchor="middle" font-size="11.5" fill="#455a64">C1-C3</text>
+<rect x="230" y="125" width="170" height="46" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.6"/>
+<text x="315.0" y="144" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">departure</text>
+<text x="315.0" y="161" text-anchor="middle" font-size="11.5" fill="#455a64">D1</text>
+<rect x="230" y="290" width="170" height="46" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.6"/>
+<text x="315.0" y="309" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">heat_index</text>
+<text x="315.0" y="326" text-anchor="middle" font-size="11.5" fill="#455a64">D3 (Rothfusz)</text>
+<rect x="230" y="355" width="170" height="46" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.6"/>
+<text x="315.0" y="374" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">tmin_departure</text>
+<text x="315.0" y="391" text-anchor="middle" font-size="11.5" fill="#455a64">D2</text>
+<rect x="230" y="430" width="170" height="46" rx="8" fill="#fde0dc" stroke="#b7202e" stroke-width="1.6"/>
+<text x="315.0" y="449" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">hri</text>
+<text x="315.0" y="466" text-anchor="middle" font-size="11.5" fill="#455a64">T1-T4 triage</text>
+<rect x="230" y="505" width="170" height="46" rx="8" fill="#fde0dc" stroke="#b7202e" stroke-width="1.6"/>
+<text x="315.0" y="524" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">error -> HALT</text>
+<text x="315.0" y="541" text-anchor="middle" font-size="11.5" fill="#455a64">V1-V5, D0: all numeric inputs</text>
+<rect x="440" y="80" width="170" height="46" rx="8" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.6"/>
+<text x="525.0" y="99" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">hw_category</text>
+<text x="525.0" y="116" text-anchor="middle" font-size="11.5" fill="#455a64">C4-C8 (IMD)</text>
+<rect x="440" y="290" width="170" height="46" rx="8" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.6"/>
+<text x="525.0" y="309" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">hi_level</text>
+<text x="525.0" y="326" text-anchor="middle" font-size="11.5" fill="#455a64">H1-H4</text>
+<rect x="440" y="355" width="170" height="46" rx="8" fill="#fff3e0" stroke="#ef6c00" stroke-width="1.6"/>
+<text x="525.0" y="374" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">night</text>
+<text x="525.0" y="391" text-anchor="middle" font-size="11.5" fill="#455a64">W1-W2 warm night</text>
+<rect x="440" y="430" width="170" height="46" rx="8" fill="#fde0dc" stroke="#b7202e" stroke-width="1.6"/>
+<text x="525.0" y="449" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">EMERGENCY / first aid</text>
+<text x="525.0" y="466" text-anchor="middle" font-size="11.5" fill="#455a64">T5-T7</text>
+<rect x="650" y="150" width="170" height="46" rx="8" fill="#fce4ec" stroke="#b7202e" stroke-width="1.6"/>
+<text x="735.0" y="169" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">alert (+status)</text>
+<text x="735.0" y="186" text-anchor="middle" font-size="11.5" fill="#455a64">A1-A8 colour code</text>
+<rect x="860" y="250" width="170" height="46" rx="8" fill="#fce4ec" stroke="#b7202e" stroke-width="1.6"/>
+<text x="945.0" y="269" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">alert (escalated)</text>
+<text x="945.0" y="286" text-anchor="middle" font-size="11.5" fill="#455a64">E1-E3</text>
+<rect x="1080" y="110" width="170" height="46" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.6"/>
+<text x="1165.0" y="129" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">needs_review</text>
+<text x="1165.0" y="146" text-anchor="middle" font-size="11.5" fill="#455a64">G1 human-in-loop</text>
+<rect x="1080" y="190" width="170" height="46" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.6"/>
+<text x="1165.0" y="209" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">recommendation</text>
+<text x="1165.0" y="226" text-anchor="middle" font-size="11.5" fill="#455a64">K1 summary</text>
+<rect x="1080" y="300" width="170" height="46" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.6"/>
+<text x="1165.0" y="319" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">stakeholder advice</text>
+<text x="1165.0" y="336" text-anchor="middle" font-size="11.5" fill="#455a64">P/F/M/X rules + role profile</text>
+<rect x="1080" y="395" width="170" height="46" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.6"/>
+<text x="1165.0" y="414" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">data-gap notes</text>
+<text x="1165.0" y="431" text-anchor="middle" font-size="11.5" fill="#455a64">G2-G3: rh / tmin missing</text>
+<text x="105.0" y="18" text-anchor="middle" font-size="13" fill="#b7202e" font-weight="bold">User inputs</text>
+<text x="315.0" y="18" text-anchor="middle" font-size="13" fill="#b7202e" font-weight="bold">Validation / derivation</text>
+<text x="525.0" y="18" text-anchor="middle" font-size="13" fill="#b7202e" font-weight="bold">Classification</text>
+<text x="735.0" y="18" text-anchor="middle" font-size="13" fill="#b7202e" font-weight="bold">IMD alert</text>
+<text x="945.0" y="18" text-anchor="middle" font-size="13" fill="#b7202e" font-weight="bold">Escalation</text>
+<text x="1165.0" y="18" text-anchor="middle" font-size="13" fill="#b7202e" font-weight="bold">Conclusions</text>
+</svg>

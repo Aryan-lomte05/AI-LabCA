@@ -1,0 +1,7 @@
+{
+  "role": "citizen",
+  "region": "plains",
+  "tmax": 62.0,
+  "tmax_normal": 40.0,
+  "heat_days": 2
+}

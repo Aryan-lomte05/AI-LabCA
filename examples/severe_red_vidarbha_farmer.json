@@ -1,0 +1,9 @@
+{
+  "role": "farmer",
+  "region": "plains",
+  "tmax": 47.2,
+  "tmax_normal": 42.0,
+  "heat_days": 4,
+  "rh": 18,
+  "farm": "both"
+}

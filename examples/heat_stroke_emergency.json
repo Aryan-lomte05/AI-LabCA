@@ -1,0 +1,16 @@
+{
+  "role": "citizen",
+  "region": "plains",
+  "tmax": 45.0,
+  "tmax_normal": 40.0,
+  "heat_days": 2,
+  "rh": 22,
+  "vulnerable": [
+    "elderly"
+  ],
+  "symptoms": [
+    "high_body_temp",
+    "confusion",
+    "no_sweating"
+  ]
+}

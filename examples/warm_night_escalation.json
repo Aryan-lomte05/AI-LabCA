@@ -1,0 +1,15 @@
+{
+  "role": "citizen",
+  "region": "plains",
+  "tmax": 45.6,
+  "tmax_normal": 39.8,
+  "heat_days": 3,
+  "rh": 25,
+  "tmin": 31.0,
+  "tmin_normal": 26.0,
+  "vulnerable": [
+    "elderly",
+    "outdoor_worker"
+  ],
+  "symptoms": []
+}
