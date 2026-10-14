@@ -4,3 +4,4 @@ __pycache__/
 .venv/
 docs/reference.docx
 frontend/node_modules/
+.vercel
