@@ -411,6 +411,8 @@ File: `prolog/heatguard.pl`. Run: `swipl prolog/heatguard.pl`, then `?- start.` 
 
 Examiners love "change something now". Practise these **before the viva** and undo them afterwards with `git checkout .`.
 
+> ⚠️ After reverting an edit, run tests with `python -B -m pytest -q`, or delete the `__pycache__` folders first. If an edit and its revert happen within the same second and keep the same file size, Python can keep running the stale cached bytecode. We hit exactly this while preparing the guide.
+
 **Drill 1: "Add a rule: during a Red alert, schools must close."**
 In `knowledge_base.py`, before K1, add:
 ```python

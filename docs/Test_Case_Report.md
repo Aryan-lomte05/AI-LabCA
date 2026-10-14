@@ -1,11 +1,11 @@
 # D4 - Test Case Report (auto-generated)
 
-pytest: **1 failed, 34 passed in 0.09s**
+pytest: **35 passed in 0.09s**
 
 | TC | Scenario | Alert / outcome | Rules fired | Result |
 |---|---|---|---|---|
 | TC01 | Normal summer day, Pune (plains) - no heat wave | GREEN / none | 7 | PASS |
-| TC02 | Humid heat, Mumbai (coastal) - below IMD threshold | YELLOW / none | 10 | FAIL |
+| TC02 | Humid heat, Mumbai (coastal) - below IMD threshold | YELLOW / none | 9 | PASS |
 | TC03 | Severe heat wave for 4 days, Vidarbha (farmer) | RED / severe_heatwave | 11 | PASS |
 | TC04 | Heat wave criteria met on day 1 only (municipal authority) | YELLOW / heatwave | 9 | PASS |
 | TC05 | Hill station (Mahabaleshwar) severe departure, 2 days (health dept) | ORANGE / severe_heatwave | 8 | PASS |
@@ -40,9 +40,9 @@ pytest: **1 failed, 34 passed in 0.09s**
 
 - *Inputs:* `role=citizen, region=coastal, tmax=35.0, tmax_normal=33.0, heat_days=2, rh=60, vulnerable=elderly`
 - *Expected:* alert = YELLOW, hw_category = none, hi_level = danger, escalated = humid heat stress
-- *Rules fired (in order):* D1 → D3 → C2 → H3 → C8 → A1 → E2 → P4 → P2 → K1
+- *Rules fired (in order):* D1 → D3 → H3 → C8 → A1 → E2 → P4 → P2 → K1
 - *Output:* YELLOW ALERT (Heat alert - be updated); advice for: CITIZEN, VULNERABLE
-- *Result:* **FAIL**
+- *Result:* **PASS**
 
 **TC03: Severe heat wave for 4 days, Vidarbha (farmer)**
 
